@@ -1,5 +1,5 @@
-const NODE_API_BASE = 'http://localhost:5000/api';
-const PYTHON_API_BASE = 'http://localhost:8000/api';
+const NODE_API_BASE = (import.meta.env.VITE_NODE_API_URL || 'http://localhost:5000/api').replace(/\/$/, '');
+const PYTHON_API_BASE = (import.meta.env.VITE_PYTHON_API_URL || 'http://localhost:8000/api').replace(/\/$/, '');
 
 export const fetchReports = async () => {
   try {
