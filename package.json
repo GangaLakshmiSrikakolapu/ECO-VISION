@@ -1,0 +1,22 @@
+{
+  "name": "ecovision-smart-waste-management",
+  "version": "1.0.0",
+  "description": "Smart Waste Management System with React, Node.js, Python AI, and Firebase",
+  "scripts": {
+    "start": "node backend-node/server.js",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:node": "node backend-node/server.js",
+    "dev:python": "python backend-python/app.py"
+  },
+  "keywords": [
+    "eco-vision",
+    "waste-management",
+    "ai-classification",
+    "react",
+    "node",
+    "firebase",
+    "fastapi"
+  ],
+  "author": "Eco Vision Team",
+  "license": "ISC"
+}
