@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ClipboardList, Clock, CheckCircle2, AlertCircle, RefreshCw, Cpu, MapPin, X, Trash2 } from 'lucide-react';
-import { fetchReports } from '../services/api';
+import { fetchReports, clearAllReportsApi } from '../services/api';
 
 export default function MyReports() {
   const [reports, setReports] = useState([]);
@@ -14,8 +14,9 @@ export default function MyReports() {
     });
   }, []);
 
-  const handleClearReports = () => {
+  const handleClearReports = async () => {
     if (window.confirm("Are you sure you want to clear all report history?")) {
+      await clearAllReportsApi();
       setReports([]);
     }
   };

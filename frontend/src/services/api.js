@@ -2,6 +2,12 @@ const NODE_API_BASE = (import.meta.env.VITE_NODE_API_URL || 'http://localhost:50
 const PYTHON_API_BASE = (import.meta.env.VITE_PYTHON_API_URL || 'http://localhost:8000/api').replace(/\/$/, '');
 
 export const fetchReports = async () => {
+  // If user explicitly cleared reports, check local storage override
+  if (localStorage.getItem('ecovision_reports_cleared') === 'true') {
+    const localUserReports = JSON.parse(localStorage.getItem('ecovision_user_reports') || '[]');
+    return localUserReports;
+  }
+
   try {
     const res = await fetch(`${NODE_API_BASE}/reports`);
     const json = await res.json();
@@ -19,20 +25,21 @@ export const fetchReports = async () => {
         dateTime: "2026-09-17 10:15 AM",
         description: "Discarded plastic bottles and wrappers near gate.",
         imageUrl: "https://images.unsplash.com/photo-1604186838347-9faaf0dc6a06?auto=format&fit=crop&w=600&q=80"
-      },
-      {
-        id: "#102",
-        wasteType: "Organic",
-        location: "Block B Canteen",
-        coordinates: { lat: 16.5070, lng: 80.6492 },
-        status: "Pending",
-        assignedStaff: "Unassigned",
-        dateTime: "2026-09-17 09:45 AM",
-        description: "Food leftovers accumulated near counter.",
-        imageUrl: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=600&q=80"
       }
     ];
   }
+};
+
+export const clearAllReportsApi = async () => {
+  localStorage.setItem('ecovision_reports_cleared', 'true');
+  localStorage.setItem('ecovision_user_reports', JSON.stringify([]));
+
+  try {
+    await fetch(`${NODE_API_BASE}/reports`, { method: 'DELETE' });
+  } catch (err) {
+    console.warn("Node backend unreachable for clear API call.", err);
+  }
+  return { success: true };
 };
 
 export const submitReport = async (reportData) => {
@@ -42,18 +49,36 @@ export const submitReport = async (reportData) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(reportData)
     });
-    return await res.json();
+    const json = await res.json();
+    
+    // Save to local user reports list if cleared state active
+    if (localStorage.getItem('ecovision_reports_cleared') === 'true') {
+      const userReports = JSON.parse(localStorage.getItem('ecovision_user_reports') || '[]');
+      const newReport = json.data || { id: `#${Date.now()}`, ...reportData };
+      userReports.unshift(newReport);
+      localStorage.setItem('ecovision_user_reports', JSON.stringify(userReports));
+    }
+    
+    return json;
   } catch (err) {
     console.warn("Using offline submit handler:", err);
+    const newReport = {
+      id: `#${Math.floor(100 + Math.random() * 900)}`,
+      ...reportData,
+      status: "Assigned to Staff",
+      dateTime: new Date().toLocaleString()
+    };
+
+    if (localStorage.getItem('ecovision_reports_cleared') === 'true') {
+      const userReports = JSON.parse(localStorage.getItem('ecovision_user_reports') || '[]');
+      userReports.unshift(newReport);
+      localStorage.setItem('ecovision_user_reports', JSON.stringify(userReports));
+    }
+
     return {
       success: true,
       message: "Report saved locally!",
-      data: {
-        id: `#${Math.floor(100 + Math.random() * 900)}`,
-        ...reportData,
-        status: "Assigned to Staff",
-        dateTime: new Date().toLocaleString()
-      }
+      data: newReport
     };
   }
 };

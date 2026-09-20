@@ -29,6 +29,20 @@ app.get('/api/reports', async (req, res) => {
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
+// 1b. CLEAR ALL REPORTS
+app.delete('/api/reports', async (req, res) => {
+  try {
+    localDb.reports = [];
+    if (isFirebaseConnected && db) {
+      const snapshot = await db.collection('reports').get();
+      const batch = db.batch();
+      snapshot.docs.forEach(doc => batch.delete(doc.ref));
+      await batch.commit();
+    }
+    res.json({ success: true, message: "All reports cleared successfully." });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
 });
 
 // 2. CREATE NEW REPORT
