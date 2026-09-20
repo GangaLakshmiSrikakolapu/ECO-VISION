@@ -123,19 +123,60 @@ export default function ReportWasteForm({ onSubmitSuccess, prefilledWasteType })
     startCamera();
   };
 
+  const [coordinates, setCoordinates] = useState({ lat: 16.5062, lng: 80.6480 });
+  const [isLocating, setIsLocating] = useState(false);
+  const [locationError, setLocationError] = useState('');
+
   const handleUseCurrentLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          setLocation(`College Campus (${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)})`);
-        },
-        () => {
-          setLocation("College Main Gate Area (GPS Default)");
-        }
-      );
-    } else {
-      setLocation("College Main Gate Area");
+    setIsLocating(true);
+    setLocationError('');
+
+    if (!navigator.geolocation) {
+      setLocationError("Geolocation is not supported by your browser.");
+      setIsLocating(false);
+      return;
     }
+
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        setCoordinates({ lat, lng });
+
+        try {
+          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`);
+          const geoData = await res.json();
+          
+          if (geoData && geoData.address) {
+            const addr = geoData.address;
+            const mainLoc = addr.amenity || addr.building || addr.road || addr.suburb || addr.neighbourhood || addr.city || "College Campus";
+            const areaName = addr.suburb || addr.city_district || addr.town || addr.city || "Campus Area";
+            
+            setLocation(`${mainLoc}, ${areaName} (GPS: ${lat.toFixed(4)}, ${lng.toFixed(4)})`);
+          } else {
+            setLocation(`College Campus Grounds (GPS: ${lat.toFixed(4)}, ${lng.toFixed(4)})`);
+          }
+        } catch (err) {
+          console.warn("Reverse geocoding error:", err);
+          setLocation(`College Campus Grounds (GPS: ${lat.toFixed(4)}, ${lng.toFixed(4)})`);
+        } finally {
+          setIsLocating(false);
+        }
+      },
+      (err) => {
+        console.warn("Geolocation position error:", err);
+        setIsLocating(false);
+        setLocationError("Unable to fetch GPS automatically. Type your location or select a landmark shortcut below.");
+        setLocation("College Main Gate Area");
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+    );
+  };
+
+  const setPresetLocation = (name, lat, lng) => {
+    setLocation(name);
+    setCoordinates({ lat, lng });
+    setLocationError('');
   };
 
   const handleSubmit = (e) => {
@@ -383,24 +424,83 @@ export default function ReportWasteForm({ onSubmitSuccess, prefilledWasteType })
 
           {/* Location Picker */}
           <div className="form-group">
-            <label style={{ fontWeight: '600' }}>Location</label>
+            <label style={{ fontWeight: '600' }}>Location Details</label>
             <div style={{ display: 'flex', gap: '8px' }}>
               <input 
                 type="text" 
                 className="form-control" 
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
-                placeholder="e.g. College Main Gate / Library Ground"
+                placeholder="e.g. Main Entrance Gate, College Campus"
                 required
               />
               <button 
                 type="button" 
                 className="btn-secondary" 
                 onClick={handleUseCurrentLocation}
+                disabled={isLocating}
                 style={{ whiteSpace: 'nowrap', padding: '8px 14px', fontSize: '0.82rem' }}
               >
-                <MapPin size={16} /> GPS Location
+                {isLocating ? (
+                  <>
+                    <RefreshCw size={16} className="animate-spin" /> Locating...
+                  </>
+                ) : (
+                  <>
+                    <MapPin size={16} /> Auto GPS Location
+                  </>
+                )}
               </button>
+            </div>
+
+            {locationError && (
+              <p style={{ color: '#d97706', fontSize: '0.8rem', marginTop: '4px' }}>
+                ⚠️ {locationError}
+              </p>
+            )}
+
+            {/* Quick Campus Landmark Shortcuts */}
+            <div style={{ marginTop: '8px' }}>
+              <span style={{ fontSize: '0.78rem', color: '#64748b', fontWeight: '600', marginRight: '6px' }}>
+                Quick Landmarks:
+              </span>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '4px' }}>
+                <button
+                  type="button"
+                  onClick={() => setPresetLocation("Main Entrance Gate, College Campus", 16.5062, 80.6480)}
+                  style={{ background: '#ecfdf5', color: '#166534', border: '1px solid #bbf7d0', padding: '3px 10px', borderRadius: '12px', fontSize: '0.78rem', fontWeight: '600', cursor: 'pointer' }}
+                >
+                  📍 Main Gate
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPresetLocation("Block B Canteen Plaza", 16.5070, 80.6492)}
+                  style={{ background: '#ecfdf5', color: '#166534', border: '1px solid #bbf7d0', padding: '3px 10px', borderRadius: '12px', fontSize: '0.78rem', fontWeight: '600', cursor: 'pointer' }}
+                >
+                  📍 Canteen Area
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPresetLocation("Central Library Corridor", 16.5081, 80.6488)}
+                  style={{ background: '#ecfdf5', color: '#166534', border: '1px solid #bbf7d0', padding: '3px 10px', borderRadius: '12px', fontSize: '0.78rem', fontWeight: '600', cursor: 'pointer' }}
+                >
+                  📍 Library
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPresetLocation("CSE Engineering Building, Block A", 16.5055, 80.6475)}
+                  style={{ background: '#ecfdf5', color: '#166534', border: '1px solid #bbf7d0', padding: '3px 10px', borderRadius: '12px', fontSize: '0.78rem', fontWeight: '600', cursor: 'pointer' }}
+                >
+                  📍 CSE Building
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPresetLocation("Hostel Play Ground Area", 16.5048, 80.6501)}
+                  style={{ background: '#ecfdf5', color: '#166534', border: '1px solid #bbf7d0', padding: '3px 10px', borderRadius: '12px', fontSize: '0.78rem', fontWeight: '600', cursor: 'pointer' }}
+                >
+                  📍 Hostel Ground
+                </button>
+              </div>
             </div>
           </div>
 
