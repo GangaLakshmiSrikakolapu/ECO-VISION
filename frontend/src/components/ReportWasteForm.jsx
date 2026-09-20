@@ -149,16 +149,18 @@ export default function ReportWasteForm({ onSubmitSuccess, prefilledWasteType })
           
           if (geoData && geoData.address) {
             const addr = geoData.address;
-            const mainLoc = addr.amenity || addr.building || addr.road || addr.suburb || addr.neighbourhood || addr.city || "College Campus";
-            const areaName = addr.suburb || addr.city_district || addr.town || addr.city || "Campus Area";
+            const landmark = addr.amenity || addr.building || addr.road || addr.suburb || addr.neighbourhood || "Campus Area";
+            const villageOrCity = addr.village || addr.town || addr.city_district || addr.city || addr.suburb || "Vijayawada";
+            const state = addr.state || "Andhra Pradesh";
+            const country = addr.country || "India";
             
-            setLocation(`${mainLoc}, ${areaName} (GPS: ${lat.toFixed(4)}, ${lng.toFixed(4)})`);
+            setLocation(`${landmark}, ${villageOrCity}, ${state}, ${country} (GPS: ${lat.toFixed(4)}, ${lng.toFixed(4)})`);
           } else {
-            setLocation(`College Campus Grounds (GPS: ${lat.toFixed(4)}, ${lng.toFixed(4)})`);
+            setLocation(`Campus Area, Vijayawada, Andhra Pradesh, India (GPS: ${lat.toFixed(4)}, ${lng.toFixed(4)})`);
           }
         } catch (err) {
           console.warn("Reverse geocoding error:", err);
-          setLocation(`College Campus Grounds (GPS: ${lat.toFixed(4)}, ${lng.toFixed(4)})`);
+          setLocation(`College Campus, Vijayawada, Andhra Pradesh, India (GPS: ${lat.toFixed(4)}, ${lng.toFixed(4)})`);
         } finally {
           setIsLocating(false);
         }
@@ -467,35 +469,35 @@ export default function ReportWasteForm({ onSubmitSuccess, prefilledWasteType })
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '4px' }}>
                 <button
                   type="button"
-                  onClick={() => setPresetLocation("Main Entrance Gate, College Campus", 16.5062, 80.6480)}
+                  onClick={() => setPresetLocation("Main Entrance Gate, Vijayawada, Andhra Pradesh", 16.5062, 80.6480)}
                   style={{ background: '#ecfdf5', color: '#166534', border: '1px solid #bbf7d0', padding: '3px 10px', borderRadius: '12px', fontSize: '0.78rem', fontWeight: '600', cursor: 'pointer' }}
                 >
                   📍 Main Gate
                 </button>
                 <button
                   type="button"
-                  onClick={() => setPresetLocation("Block B Canteen Plaza", 16.5070, 80.6492)}
+                  onClick={() => setPresetLocation("Block B Canteen, Vijayawada, Andhra Pradesh", 16.5070, 80.6492)}
                   style={{ background: '#ecfdf5', color: '#166534', border: '1px solid #bbf7d0', padding: '3px 10px', borderRadius: '12px', fontSize: '0.78rem', fontWeight: '600', cursor: 'pointer' }}
                 >
                   📍 Canteen Area
                 </button>
                 <button
                   type="button"
-                  onClick={() => setPresetLocation("Central Library Corridor", 16.5081, 80.6488)}
+                  onClick={() => setPresetLocation("Central Library, Vijayawada, Andhra Pradesh", 16.5081, 80.6488)}
                   style={{ background: '#ecfdf5', color: '#166534', border: '1px solid #bbf7d0', padding: '3px 10px', borderRadius: '12px', fontSize: '0.78rem', fontWeight: '600', cursor: 'pointer' }}
                 >
                   📍 Library
                 </button>
                 <button
                   type="button"
-                  onClick={() => setPresetLocation("CSE Engineering Building, Block A", 16.5055, 80.6475)}
+                  onClick={() => setPresetLocation("CSE Building, Block A, Vijayawada, Andhra Pradesh", 16.5055, 80.6475)}
                   style={{ background: '#ecfdf5', color: '#166534', border: '1px solid #bbf7d0', padding: '3px 10px', borderRadius: '12px', fontSize: '0.78rem', fontWeight: '600', cursor: 'pointer' }}
                 >
                   📍 CSE Building
                 </button>
                 <button
                   type="button"
-                  onClick={() => setPresetLocation("Hostel Play Ground Area", 16.5048, 80.6501)}
+                  onClick={() => setPresetLocation("Hostel Play Ground, Vijayawada, Andhra Pradesh", 16.5048, 80.6501)}
                   style={{ background: '#ecfdf5', color: '#166534', border: '1px solid #bbf7d0', padding: '3px 10px', borderRadius: '12px', fontSize: '0.78rem', fontWeight: '600', cursor: 'pointer' }}
                 >
                   📍 Hostel Ground

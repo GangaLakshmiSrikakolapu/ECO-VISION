@@ -46,7 +46,7 @@ export default function AdminDashboard() {
               <input 
                 type="password"
                 className="form-control"
-                placeholder="Enter @ECOVISION"
+                placeholder="Enter Password"
                 value={passwordInput}
                 onChange={(e) => setPasswordInput(e.target.value)}
                 required
