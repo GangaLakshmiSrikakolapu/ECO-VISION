@@ -254,3 +254,85 @@ body {
 .animate-fade-in {
   animation: fadeIn 0.35s ease-out forwards;
 }
+
+/* ===================================================
+   MOBILE RESPONSIVE & ACCESSIBILITY STYLES
+   =================================================== */
+
+/* Hide scrollbar for clean horizontal nav on mobile */
+.nav-links::-webkit-scrollbar {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .app-header {
+    padding: 10px 14px !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+  }
+
+  .logo-container {
+    justify-content: space-between;
+  }
+
+  .nav-links {
+    max-width: 100% !important;
+    width: 100% !important;
+    overflow-x: auto !important;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .nav-item {
+    padding: 8px 12px !important;
+    font-size: 0.82rem !important;
+  }
+
+  .glass-card {
+    padding: 18px 14px !important;
+    border-radius: 16px !important;
+  }
+
+  /* Force 1-column layouts on mobile for grid containers */
+  div[style*="gridTemplateColumns"],
+  div[style*="grid-template-columns"] {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+
+  h1 {
+    font-size: 1.8rem !important;
+  }
+
+  h2 {
+    font-size: 1.3rem !important;
+  }
+
+  /* Full width buttons on mobile */
+  .btn-primary, .btn-secondary {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .table-row-hover {
+    font-size: 0.82rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo-title {
+    font-size: 1.25rem !important;
+  }
+
+  .logo-icon {
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  /* Form controls */
+  .form-control {
+    font-size: 0.9rem !important;
+    padding: 10px 12px !important;
+  }
+}
