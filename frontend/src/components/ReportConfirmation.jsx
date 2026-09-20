@@ -1,10 +1,9 @@
 import React, { useEffect } from 'react';
-import { CheckCircle2, ArrowRight, FileText, MapPin, Shield } from 'lucide-react';
+import { CheckCircle2, ArrowRight, FileText, MapPin, Shield, Cpu, AlertCircle } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 export default function ReportConfirmation({ reportData, onViewReports }) {
   useEffect(() => {
-    // Trigger festive confetti celebration
     try {
       confetti({
         particleCount: 80,
@@ -20,6 +19,8 @@ export default function ReportConfirmation({ reportData, onViewReports }) {
     location: "College Main Gate Area",
     status: "Assigned to Staff"
   };
+
+  const ai = data.aiVerification;
 
   return (
     <div className="animate-fade-in" style={{ maxWidth: '600px', margin: '40px auto', padding: '0 16px' }}>
@@ -49,7 +50,7 @@ export default function ReportConfirmation({ reportData, onViewReports }) {
           Report Submitted Successfully!
         </h2>
         <p style={{ color: '#475569', fontSize: '0.95rem', marginBottom: '28px' }}>
-          Your report has been recorded and sent to the cleaning staff.
+          Your report has been recorded and assigned to the campus sanitation team.
         </p>
 
         {/* Details Card */}
@@ -61,6 +62,40 @@ export default function ReportConfirmation({ reportData, onViewReports }) {
           textAlign: 'left',
           marginBottom: '28px'
         }}>
+          {data.imageUrl && (
+            <div style={{ borderRadius: '12px', overflow: 'hidden', marginBottom: '16px', border: '1px solid #cbd5e1' }}>
+              <img src={data.imageUrl} alt="Submitted report photo" style={{ width: '100%', maxHeight: '200px', objectFit: 'cover' }} />
+            </div>
+          )}
+
+          {/* AI Verified Badge Box */}
+          {ai && (
+            <div style={{
+              background: ai.valid === false ? '#fef2f2' : '#ffffff',
+              border: `1px solid ${ai.valid === false ? '#fca5a5' : '#86efac'}`,
+              borderRadius: '10px',
+              padding: '12px 14px',
+              marginBottom: '16px'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: ai.valid === false ? '#dc2626' : '#16a34a', fontWeight: '700', fontSize: '0.88rem' }}>
+                <Cpu size={16} /> AI Detection Summary
+              </div>
+              <p style={{ margin: '4px 0 0 0', fontSize: '0.85rem', color: '#334155' }}>
+                Category: <strong>{ai.category || data.wasteType} Waste</strong> (Confidence: {ai.confidence_formatted || `${ai.confidence || 94}%`})
+              </p>
+              {ai.recommended_bin && (
+                <p style={{ margin: '2px 0 0 0', fontSize: '0.82rem', color: '#166534' }}>
+                  Bin: {ai.recommended_bin}
+                </p>
+              )}
+            </div>
+          )}
+
+          <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: '12px', fontSize: '0.92rem', marginBottom: '10px' }}>
+            <span style={{ fontWeight: '700', color: '#166534' }}>Report ID</span>
+            <span style={{ color: '#0f172a', fontWeight: '600' }}>: {data.id}</span>
+          </div>
+
           <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: '12px', fontSize: '0.92rem', marginBottom: '10px' }}>
             <span style={{ fontWeight: '700', color: '#166534' }}>Waste Type</span>
             <span style={{ color: '#0f172a', fontWeight: '600' }}>: {data.wasteType}</span>
@@ -82,7 +117,7 @@ export default function ReportConfirmation({ reportData, onViewReports }) {
           onClick={onViewReports}
           style={{ padding: '14px 32px', fontSize: '1rem' }}
         >
-          View Report <ArrowRight size={18} />
+          View My Reports <ArrowRight size={18} />
         </button>
       </div>
     </div>

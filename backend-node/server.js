@@ -34,7 +34,7 @@ app.get('/api/reports', async (req, res) => {
 // 2. CREATE NEW REPORT
 app.post('/api/reports', async (req, res) => {
   try {
-    const { wasteType, location, description, imageUrl, coordinates } = req.body;
+    const { wasteType, location, description, imageUrl, coordinates, aiVerification } = req.body;
     
     const newReportId = `#${100 + localDb.reports.length + 1}`;
     const newReport = {
@@ -46,7 +46,8 @@ app.post('/api/reports', async (req, res) => {
       assignedStaff: "Cleaning Staff Team",
       dateTime: new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }),
       description: description || "Reported dirty waste area requiring collection.",
-      imageUrl: imageUrl || "https://images.unsplash.com/photo-1604186838347-9faaf0dc6a06?auto=format&fit=crop&w=600&q=80"
+      imageUrl: imageUrl || "https://images.unsplash.com/photo-1604186838347-9faaf0dc6a06?auto=format&fit=crop&w=600&q=80",
+      aiVerification: aiVerification || { valid: true, is_waste: true, category: wasteType || "Plastic", confidence: 94 }
     };
 
     if (isFirebaseConnected && db) {

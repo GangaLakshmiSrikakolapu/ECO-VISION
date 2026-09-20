@@ -34,7 +34,8 @@ const localDb = {
       assignedStaff: "Cleaning Staff A",
       dateTime: "2026-09-17 10:15 AM",
       description: "Discarded plastic bottles and wrappers near the main entrance gate.",
-      imageUrl: "https://images.unsplash.com/photo-1604186838347-9faaf0dc6a06?auto=format&fit=crop&w=600&q=80"
+      imageUrl: "https://images.unsplash.com/photo-1604186838347-9faaf0dc6a06?auto=format&fit=crop&w=600&q=80",
+      aiVerification: { valid: true, is_waste: true, category: "Plastic", confidence: 95, confidence_formatted: "95%", recommended_bin: "Recyclable (Blue Bin)" }
     },
     {
       id: "#102",
@@ -45,7 +46,8 @@ const localDb = {
       assignedStaff: "Unassigned",
       dateTime: "2026-09-17 09:45 AM",
       description: "Food leftovers and organic waste accumulated near food counter.",
-      imageUrl: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=600&q=80"
+      imageUrl: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=600&q=80",
+      aiVerification: { valid: true, is_waste: true, category: "Organic", confidence: 93, confidence_formatted: "93%", recommended_bin: "Compost (Green Bin)" }
     },
     {
       id: "#103",
@@ -56,7 +58,8 @@ const localDb = {
       assignedStaff: "Unassigned",
       dateTime: "2026-09-16 04:20 PM",
       description: "Damaged keyboard and old circuit board cables discarded near trash.",
-      imageUrl: "https://images.unsplash.com/photo-1550009158-9ebf69173e03?auto=format&fit=crop&w=600&q=80"
+      imageUrl: "https://images.unsplash.com/photo-1550009158-9ebf69173e03?auto=format&fit=crop&w=600&q=80",
+      aiVerification: { valid: true, is_waste: true, category: "E-Waste", confidence: 96, confidence_formatted: "96%", recommended_bin: "Hazardous & E-Waste (Red Bin)" }
     },
     {
       id: "#104",
@@ -67,7 +70,8 @@ const localDb = {
       assignedStaff: "Staff Ramesh",
       dateTime: "2026-09-16 02:10 PM",
       description: "Cardboard packing materials left outside store room.",
-      imageUrl: "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&w=600&q=80"
+      imageUrl: "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&w=600&q=80",
+      aiVerification: { valid: true, is_waste: true, category: "Paper", confidence: 91, confidence_formatted: "91%", recommended_bin: "Paper & Cardboard (Yellow Bin)" }
     },
     {
       id: "#105",
@@ -78,7 +82,8 @@ const localDb = {
       assignedStaff: "Staff Suresh",
       dateTime: "2026-09-15 11:00 AM",
       description: "Scrap metal beverage cans near playground.",
-      imageUrl: "https://images.unsplash.com/photo-1558583082-409143c794ca?auto=format&fit=crop&w=600&q=80"
+      imageUrl: "https://images.unsplash.com/photo-1558583082-409143c794ca?auto=format&fit=crop&w=600&q=80",
+      aiVerification: { valid: true, is_waste: true, category: "Metal", confidence: 94, confidence_formatted: "94%", recommended_bin: "Metal & Cans (Grey Bin)" }
     }
   ],
 
