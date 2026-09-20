@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { CheckCircle2, ArrowRight, FileText, MapPin, Shield, Cpu, AlertCircle } from 'lucide-react';
+import { CheckCircle2, ArrowRight, Cpu } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 export default function ReportConfirmation({ reportData, onViewReports }) {
@@ -10,14 +10,17 @@ export default function ReportConfirmation({ reportData, onViewReports }) {
         spread: 70,
         origin: { y: 0.6 }
       });
-    } catch (e) {}
+    } catch {
+      // Ignore confetti fallback
+    }
   }, []);
 
   const data = reportData || {
     id: "#101",
     wasteType: "Plastic",
     location: "College Main Gate Area",
-    status: "Assigned to Staff"
+    status: "Assigned to Staff",
+    dateTime: new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })
   };
 
   const ai = data.aiVerification;
@@ -104,6 +107,11 @@ export default function ReportConfirmation({ reportData, onViewReports }) {
           <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: '12px', fontSize: '0.92rem', marginBottom: '10px' }}>
             <span style={{ fontWeight: '700', color: '#166534' }}>Location</span>
             <span style={{ color: '#0f172a', fontWeight: '600' }}>: {data.location}</span>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: '12px', fontSize: '0.92rem', marginBottom: '10px' }}>
+            <span style={{ fontWeight: '700', color: '#166534' }}>Date & Time</span>
+            <span style={{ color: '#0f172a', fontWeight: '600' }}>: {data.dateTime || new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })}</span>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: '12px', fontSize: '0.92rem' }}>

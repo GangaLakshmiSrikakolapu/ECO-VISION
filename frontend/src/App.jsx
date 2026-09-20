@@ -19,6 +19,8 @@ export default function App() {
   const [currentRole, setCurrentRole] = useState('User');
   const [submittedReportData, setSubmittedReportData] = useState(null);
   const [prefilledWasteType, setPrefilledWasteType] = useState('Plastic');
+  const [prefilledImage, setPrefilledImage] = useState('');
+  const [prefilledAiResult, setPrefilledAiResult] = useState(null);
 
   // Handle Form Submission
   const handleReportSubmit = async (reportData) => {
@@ -28,12 +30,21 @@ export default function App() {
     } else {
       setSubmittedReportData(reportData);
     }
+    // Clear prefilled data after submit
+    setPrefilledImage('');
+    setPrefilledAiResult(null);
     setActiveTab('confirmation');
   };
 
   // AI Classification -> Direct File Report Trigger
-  const handleFileReportWithCategory = (category) => {
-    setPrefilledWasteType(category);
+  const handleFileReportWithCategory = (data) => {
+    if (typeof data === 'object' && data !== null) {
+      setPrefilledWasteType(data.category || 'Plastic');
+      setPrefilledImage(data.imagePreview || '');
+      setPrefilledAiResult(data.result || null);
+    } else {
+      setPrefilledWasteType(data || 'Plastic');
+    }
     setActiveTab('report');
   };
 
@@ -74,6 +85,8 @@ export default function App() {
         {activeTab === 'report' && (
           <ReportWasteForm 
             prefilledWasteType={prefilledWasteType}
+            prefilledImage={prefilledImage}
+            prefilledAiResult={prefilledAiResult}
             onSubmitSuccess={handleReportSubmit} 
           />
         )}

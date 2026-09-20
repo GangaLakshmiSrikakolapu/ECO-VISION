@@ -66,7 +66,7 @@ export const submitReport = async (reportData) => {
       id: `#${Math.floor(100 + Math.random() * 900)}`,
       ...reportData,
       status: "Assigned to Staff",
-      dateTime: new Date().toLocaleString()
+      dateTime: reportData.dateTime || new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })
     };
 
     if (localStorage.getItem('ecovision_reports_cleared') === 'true') {

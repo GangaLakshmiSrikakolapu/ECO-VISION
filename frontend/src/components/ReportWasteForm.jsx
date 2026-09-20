@@ -2,11 +2,11 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Upload, MapPin, Camera, AlertTriangle, Send, Image as ImageIcon, RefreshCw, CheckCircle2, XCircle, RotateCcw, X } from 'lucide-react';
 import { classifyWasteImage } from '../services/api';
 
-export default function ReportWasteForm({ onSubmitSuccess, prefilledWasteType }) {
+export default function ReportWasteForm({ onSubmitSuccess, prefilledWasteType, prefilledImage, prefilledAiResult }) {
   const [wasteType, setWasteType] = useState(prefilledWasteType || 'Plastic');
   const [location, setLocation] = useState('College Main Gate');
   const [description, setDescription] = useState('');
-  const [imagePreview, setImagePreview] = useState('');
+  const [imagePreview, setImagePreview] = useState(prefilledImage || '');
   const [filename, setFilename] = useState('');
   
   // Camera States
@@ -15,18 +15,30 @@ export default function ReportWasteForm({ onSubmitSuccess, prefilledWasteType })
   
   // AI Validation States
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [aiResult, setAiResult] = useState(null);
+  const [aiResult, setAiResult] = useState(prefilledAiResult || null);
   const [validationError, setValidationError] = useState('');
 
   const videoRef = useRef(null);
   const streamRef = useRef(null);
 
-  // Stop camera tracks on component unmount
+  const stopCamera = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current = null;
+    }
+    setIsCameraOpen(false);
+  };
+
+  // Stop camera tracks on component unmount & sync prefilled props
   useEffect(() => {
+    if (prefilledWasteType) setWasteType(prefilledWasteType);
+    if (prefilledImage) setImagePreview(prefilledImage);
+    if (prefilledAiResult) setAiResult(prefilledAiResult);
+
     return () => {
       stopCamera();
     };
-  }, []);
+  }, [prefilledWasteType, prefilledImage, prefilledAiResult]);
 
   const startCamera = async () => {
     setCameraError('');
@@ -51,14 +63,6 @@ export default function ReportWasteForm({ onSubmitSuccess, prefilledWasteType })
     }
   };
 
-  const stopCamera = () => {
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach(track => track.stop());
-      streamRef.current = null;
-    }
-    setIsCameraOpen(false);
-  };
-
   const capturePhoto = () => {
     if (!videoRef.current) return;
 
@@ -71,7 +75,7 @@ export default function ReportWasteForm({ onSubmitSuccess, prefilledWasteType })
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
     const dataUrl = canvas.toDataURL('image/jpeg', 0.88);
-    const snapFilename = `camera_snap_${Date.now()}.jpg`;
+    const snapFilename = `camera_snap.jpg`;
     
     setImagePreview(dataUrl);
     setFilename(snapFilename);
@@ -194,12 +198,18 @@ export default function ReportWasteForm({ onSubmitSuccess, prefilledWasteType })
       return;
     }
 
+    const currentDateTimeStr = new Date().toLocaleString('en-US', {
+      dateStyle: 'medium',
+      timeStyle: 'short'
+    });
+
     const reportData = {
       wasteType,
       location,
       description: description || `Reported ${wasteType} waste area requiring collection.`,
       imageUrl: imagePreview,
-      coordinates: { lat: 16.5062, lng: 80.6480 },
+      dateTime: currentDateTimeStr,
+      coordinates: coordinates || { lat: 16.5062, lng: 80.6480 },
       aiVerification: aiResult
     };
 

@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { ClipboardList, Clock, CheckCircle2, AlertCircle, RefreshCw, Cpu, MapPin, X, Trash2 } from 'lucide-react';
+import { Clock, CheckCircle2, AlertCircle, RefreshCw, Cpu, X, Trash2 } from 'lucide-react';
 import { fetchReports, clearAllReportsApi } from '../services/api';
 
 export default function MyReports() {
   const [reports, setReports] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [selectedReport, setSelectedReport] = useState(null);
 
   useEffect(() => {
     fetchReports().then((data) => {
       setReports(data);
-      setIsLoading(false);
     });
   }, []);
 
@@ -112,7 +110,7 @@ export default function MyReports() {
                 <td style={{ padding: '14px 16px' }}>{getAIDetectionBadge(r)}</td>
                 <td style={{ padding: '14px 16px', color: '#475569' }}>{r.location}</td>
                 <td style={{ padding: '14px 16px' }}>{getStatusBadge(r.status)}</td>
-                <td style={{ padding: '14px 16px', color: '#64748b', fontSize: '0.85rem' }}>{r.dateTime}</td>
+                <td style={{ padding: '14px 16px', color: '#64748b', fontSize: '0.85rem' }}>{r.dateTime || 'Just now'}</td>
               </tr>
             ))}
           </tbody>

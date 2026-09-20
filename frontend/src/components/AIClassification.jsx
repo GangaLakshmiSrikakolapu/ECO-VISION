@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Cpu, Upload, RefreshCw, ArrowRight, Camera, XCircle, CheckCircle2, RotateCcw, X } from 'lucide-react';
+import { Cpu, Upload, RefreshCw, ArrowRight, Camera, XCircle, X, Lightbulb } from 'lucide-react';
 import { classifyWasteImage } from '../services/api';
 
 export default function AIClassification({ onFileReportWithCategory }) {
@@ -23,6 +23,14 @@ export default function AIClassification({ onFileReportWithCategory }) {
 
   const videoRef = useRef(null);
   const streamRef = useRef(null);
+
+  const stopCamera = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current = null;
+    }
+    setIsCameraOpen(false);
+  };
 
   useEffect(() => {
     return () => {
@@ -49,14 +57,6 @@ export default function AIClassification({ onFileReportWithCategory }) {
     }
   };
 
-  const stopCamera = () => {
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach(track => track.stop());
-      streamRef.current = null;
-    }
-    setIsCameraOpen(false);
-  };
-
   const capturePhoto = () => {
     if (!videoRef.current) return;
 
@@ -69,7 +69,7 @@ export default function AIClassification({ onFileReportWithCategory }) {
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
     const dataUrl = canvas.toDataURL('image/jpeg', 0.88);
-    const snapFilename = `camera_snap_${Date.now()}.jpg`;
+    const snapFilename = `camera_snap.jpg`;
 
     setImagePreview(dataUrl);
     setFilename(snapFilename);
@@ -261,7 +261,7 @@ export default function AIClassification({ onFileReportWithCategory }) {
               border: '1px solid #e2e8f0',
               marginBottom: '16px'
             }}>
-              <p style={{ fontSize: '0.9rem', color: '#334155', lineHeight: '1.5' }}>
+              <p style={{ fontSize: '0.9rem', color: '#334155', lineHeight: '1.5', margin: 0 }}>
                 {result.description}
               </p>
             </div>
@@ -276,19 +276,30 @@ export default function AIClassification({ onFileReportWithCategory }) {
                 padding: '6px 14px',
                 borderRadius: '8px',
                 fontSize: '0.9rem',
-                fontWeight: '700'
+                fontWeight: '700',
+                display: 'inline-block'
               }}>
                 {result.recommended_bin}
               </span>
             </div>
 
-            {/* Quick Segregation Tips */}
+            {/* Clear Segregation & Handling Tips Section */}
             {result.tips && result.tips.length > 0 && (
-              <div style={{ marginBottom: '20px' }}>
-                <h4 style={{ fontSize: '0.85rem', fontWeight: '700', color: '#475569', marginBottom: '6px' }}>Segregation Tips:</h4>
-                <ul style={{ paddingLeft: '20px', fontSize: '0.82rem', color: '#64748b' }}>
+              <div style={{
+                background: '#eff6ff',
+                border: '1px solid #bfdbfe',
+                borderRadius: '14px',
+                padding: '16px',
+                marginBottom: '20px'
+              }}>
+                <h4 style={{ fontSize: '0.9rem', fontWeight: '700', color: '#1e40af', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <Lightbulb size={18} color="#2563eb" /> Clear Segregation & Action Tips:
+                </h4>
+                <ul style={{ paddingLeft: '18px', margin: 0, fontSize: '0.86rem', color: '#1e3a8a' }}>
                   {result.tips.map((tip, idx) => (
-                    <li key={idx} style={{ marginBottom: '4px' }}>{tip}</li>
+                    <li key={idx} style={{ marginBottom: '6px', lineHeight: '1.4' }}>
+                      <strong>Tip {idx + 1}:</strong> {tip}
+                    </li>
                   ))}
                 </ul>
               </div>
@@ -296,7 +307,7 @@ export default function AIClassification({ onFileReportWithCategory }) {
 
             <button 
               className="btn-primary" 
-              onClick={() => onFileReportWithCategory(result.category)}
+              onClick={() => onFileReportWithCategory({ category: result.category, imagePreview, result })}
               style={{ width: '100%', padding: '12px', fontSize: '0.95rem' }}
             >
               File Report with this Waste Type <ArrowRight size={18} />

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { PieChart as PieIcon, BarChart2, CheckCircle2, Clock, AlertTriangle, RefreshCw, Layers, Lock, Key, LogOut, ShieldCheck } from 'lucide-react';
+import { PieChart as PieIcon, BarChart2, RefreshCw, Lock, LogOut, ShieldCheck } from 'lucide-react';
 import { fetchReports } from '../services/api';
 
 export default function AdminDashboard() {

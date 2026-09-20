@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ShieldAlert, CheckCircle2, Clock, AlertTriangle, RefreshCw, UserCheck, Lock, Key, LogOut } from 'lucide-react';
+import { RefreshCw, Lock, Key, LogOut } from 'lucide-react';
 import { fetchReports, updateReportStatus } from '../services/api';
 
 export default function StaffDashboard() {
@@ -127,6 +127,7 @@ export default function StaffDashboard() {
               <th style={{ padding: '12px 16px' }}>ID</th>
               <th style={{ padding: '12px 16px' }}>Waste Type</th>
               <th style={{ padding: '12px 16px' }}>Location</th>
+              <th style={{ padding: '12px 16px' }}>Date & Time</th>
               <th style={{ padding: '12px 16px' }}>Status</th>
               <th style={{ padding: '12px 16px' }}>Action</th>
             </tr>
@@ -137,6 +138,7 @@ export default function StaffDashboard() {
                 <td style={{ padding: '14px 16px', fontWeight: '700', color: '#15803d' }}>{r.id}</td>
                 <td style={{ padding: '14px 16px', fontWeight: '600' }}>{r.wasteType}</td>
                 <td style={{ padding: '14px 16px', color: '#475569' }}>{r.location}</td>
+                <td style={{ padding: '14px 16px', color: '#64748b', fontSize: '0.85rem' }}>{r.dateTime || 'Just now'}</td>
                 <td style={{ padding: '14px 16px' }}>
                   <span className={`badge ${r.status === 'Completed' ? 'badge-completed' : r.status === 'Pending' ? 'badge-pending' : 'badge-in-progress'}`}>
                     {r.status}

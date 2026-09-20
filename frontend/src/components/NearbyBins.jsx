@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MapPin, Navigation, Compass, AlertCircle, RefreshCw, Layers } from 'lucide-react';
+import { MapPin, Navigation, RefreshCw, Layers } from 'lucide-react';
 import { fetchBins } from '../services/api';
 
 export default function NearbyBins() {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Leaf, Home, FilePlus, MapPin, Cpu, ClipboardList, ShieldAlert, PieChart, Bell, User, LogOut, Sparkles } from 'lucide-react';
 
-export default function Navbar({ activeTab, setActiveTab, currentRole, setCurrentRole, user, notificationCount }) {
+export default function Navbar({ activeTab, setActiveTab, currentRole, setCurrentRole, notificationCount }) {
   return (
     <header className="app-header">
       <div className="logo-container" onClick={() => setActiveTab('home')}>
