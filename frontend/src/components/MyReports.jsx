@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ClipboardList, Clock, CheckCircle2, AlertCircle, RefreshCw, Cpu, MapPin, X } from 'lucide-react';
+import { ClipboardList, Clock, CheckCircle2, AlertCircle, RefreshCw, Cpu, MapPin, X, Trash2 } from 'lucide-react';
 import { fetchReports } from '../services/api';
 
 export default function MyReports() {
@@ -13,6 +13,12 @@ export default function MyReports() {
       setIsLoading(false);
     });
   }, []);
+
+  const handleClearReports = () => {
+    if (window.confirm("Are you sure you want to clear all report history?")) {
+      setReports([]);
+    }
+  };
 
   const getStatusBadge = (status) => {
     if (status === 'Completed') {
@@ -58,9 +64,18 @@ export default function MyReports() {
           <p style={{ color: '#64748b', fontSize: '0.9rem' }}>Track status, photos, and AI detection details for your submitted waste reports.</p>
         </div>
 
-        <button className="btn-secondary" onClick={() => fetchReports().then(setReports)}>
-          <RefreshCw size={16} /> Refresh Table
-        </button>
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <button className="btn-secondary" onClick={() => fetchReports().then(setReports)}>
+            <RefreshCw size={16} /> Refresh Table
+          </button>
+          <button 
+            className="btn-secondary" 
+            onClick={handleClearReports}
+            style={{ background: '#fef2f2', color: '#dc2626', borderColor: '#fca5a5' }}
+          >
+            <Trash2 size={16} /> Clear Reports
+          </button>
+        </div>
       </div>
 
       <div className="glass-card" style={{ padding: '24px', borderRadius: '20px', overflowX: 'auto' }}>
